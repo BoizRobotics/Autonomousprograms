@@ -35,7 +35,10 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
@@ -53,130 +56,131 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="bluepositionleft", group="Cade_sensor")
 //@Disabled
-public class CadeRemoteDrive extends LinearOpMode {
+public class BluePositionLeft extends LinearOpMode { /* The robot drives forward and grabs the base, then puts it into the building zone. It
+then parks on the blue line */
 
-	// Declare OpMode members.
-	private ElapsedTime runtime = new ElapsedTime();
-	private DcMotor front_right_drive = null;
-	private DcMotor front_left_drive = null;
-	private DcMotor back_right_drive = null;
-	private DcMotor back_left_drive = null;
-	private DcMotor cow = null;
-	private DcMotor turntable = null;
-	private DcMotor pull_down = null;
-	private Servo claw_front;
-	private Servo claw_back;
-	private Servo base_hand;
-	private DistanceSensor sensor2mDistance1;
-	ColorSensor sensor_color;
-	@Override
-	public void runOpMode() {
-		//initialize the hardware
-		Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensor2mDistance1;
-		front_left_drive = hardwareMap.get(DcMotor.class, "front_left_drive");
-		front_right_drive = hardwareMap.get(DcMotor.class, "front_right_drive");
-		back_left_drive = hardwareMap.get(DcMotor.class, "back_left_drive");
-		back_right_drive = hardwareMap.get(DcMotor.class, "back_right_drive");
-		cow = hardwareMap.get(DcMotor.class, "cow");
-		turntable = hardwareMap.get(DcMotor.class, "turntable");
-		sensor2mDistance1 = hardwareMap.get(DistanceSensor.class, "sensor_distance1");
-		sensor_color = hardwareMap.get(ColorSensor.class, "sensor_color");
-		claw_front = hardwareMap.get(Servo.class, "claw_front");
-		claw_back = hardwareMap.get(Servo.class, "claw_back");
-		base_hand = hardwareMap.get(Servo.class, "base_hand");
-		pull_down = hardwareMap.get(DcMotor.class, "pull_down");
+    // Declare OpMode members.
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor front_right = null;
+    private DcMotor front_left = null;
+    private DcMotor back_right = null;
+    private DcMotor back_left = null;
+    private DcMotor cow = null;
+    private DcMotor turntable = null;
+    private DcMotor pull_down = null;
+    private Servo claw;
+    private Servo backclaw;
+    private Servo basehand;
+    private DistanceSensor sensor2mDistance1;
+    ColorSensor sensor_color;
+    @Override
+    public void runOpMode() {
+        //initialize the hardware
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensor2mDistance1;
+        front_left = hardwareMap.get(DcMotor.class, "front_left");
+        front_right = hardwareMap.get(DcMotor.class, "front_right");
+        back_left = hardwareMap.get(DcMotor.class, "back_left");
+        back_right = hardwareMap.get(DcMotor.class, "back_right");
+        cow = hardwareMap.get(DcMotor.class, "cow");
+        turntable = hardwareMap.get(DcMotor.class, "turntable");
+        sensor2mDistance1 = hardwareMap.get(DistanceSensor.class, "sensor_distance1");
+        sensor_color = hardwareMap.get(ColorSensor.class, "sensor_color");
+        claw = hardwareMap.get(Servo.class, "claw");
+        backclaw = hardwareMap.get(Servo.class, "backclaw");
+        basehand = hardwareMap.get(Servo.class, "basehand");
+        pull_down = hardwareMap.get(DcMotor.class, "pull_down");
 
-		//set the direction of the motors
-		front_left_drive.setDirection(DcMotor.Direction.FORWARD);
-		back_left_drive.setDirection(DcMotor.Direction.FORWARD);
-		front_right_drive.setDirection(DcMotor.Direction.REVERSE);
-		back_right_drive.setDirection(DcMotor.Direction.REVERSE);
-		cow.setDirection(DcMotor.Direction.FORWARD);
-		turn_table.setDirection(DcMotor.Direction.FORWARD);
-		pull_down.setDirection(DcMotor.Direction.FORWARD);
+        //set the direction of the motors
+        front_left.setDirection(DcMotor.Direction.FORWARD);
+        back_left.setDirection(DcMotor.Direction.FORWARD);
+        front_right.setDirection(DcMotor.Direction.REVERSE);
+        back_right.setDirection(DcMotor.Direction.REVERSE);
+        cow.setDirection(DcMotor.Direction.FORWARD);
+        turntable.setDirection(DcMotor.Direction.FORWARD);
+        pull_down.setDirection(DcMotor.Direction.FORWARD);
 
-		//add the data to the ftc app
-		telemetry.addData("Status", "Initialized");
-		telemetry.update();
+        //add the data to the ftc app
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
-		waitForStart();
-		while(opModeIsActive()) { //this program takes the inputs from both the color sensor and the 2m distance sensor to avoid obstacles and 
-			//add data to the ftc app
-			telemetry.addData("distance (in): ", sensor2mDistance1.getDistance(DistanceUnit.INCH));
-			telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getMode1ID()));
-			telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-			telemetry.addData("gamepad y = ", gamepad1.right_stick_y);
-			telemetry.addData("gamepad x = ",  gamepad1.right_stick_x);
-			telemetry.update();
+        waitForStart();
+        while(opModeIsActive()) { //this program takes the inputs from both the color sensor and the 2m distance sensor to avoid obstacles and
+            //add data to the ftc app
+            telemetry.addData("distance (in): ", sensor2mDistance1.getDistance(DistanceUnit.INCH));
+            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+            telemetry.addData("gamepad y = ", gamepad1.right_stick_y);
+            telemetry.addData("gamepad x = ",  gamepad1.right_stick_x);
+            telemetry.update();
 
-			//turn table motor unfolded
-			turntable.setPower(0.2);
-			sleep(300);
-			turntable.setPower(0);
+            //turn table motor unfolded
+            turntable.setPower(0.2);
+            sleep(300);
+            turntable.setPower(0);
 
-			//claw position set
-			claw_front.setPosition(0.5);
-			claw_back.setPosition(0);
+            //claw position set
+            claw.setPosition(0.5);
+            backclaw.setPosition(0);
 
-			// lift up a little (sample)
-			cow.setPower(0.3);
-			pull_down.setPower(0.3);
-			sleep(500);
-			pull_down.setPower(0);
-			cow.setPower(0);
+            // lift up a little (sample)
+            cow.setPower(0.3);
+            pull_down.setPower(0.2);
+            sleep(500);
+            pull_down.setPower(0);
+            cow.setPower(0);
 
-			//go forward (backward, but we start backward) for 0.8 seconds
-			front_left.setPower(-0.5);
-			front_right.setPower(-0.5);
-			back_left.setPower(-0.5);
-			back_right.setPower(-0.5);
-			sleep(800);
-			front_left.setPower(0);
-			front_right.setPower(0);
-			back_left.setPower(0);
-			back_right.setPower(0);
+            //go forward (backward, but we start backward) for 0.8 seconds
+            front_left.setPower(-0.5);
+            front_right.setPower(-0.5);
+            back_left.setPower(-0.5);
+            back_right.setPower(-0.5);
+            sleep(800);
+            front_left.setPower(0);
+            front_right.setPower(0);
+            back_left.setPower(0);
+            back_right.setPower(0);
 
-			base_hand.setPosition(0);
-			sleep(300);
+            basehand.setPosition(0);
+            sleep(300);
 
-			//turn the base
-			front_left.setPower(-0.5);
-			front_right.setPower(0.5);
-			back_left.setPower(-0.5);
-			back_right.setPower(0.5);
-			sleep(1000);
+            //turn the base
+            front_left.setPower(-0.5);
+            front_right.setPower(0.5);
+            back_left.setPower(-0.5);
+            back_right.setPower(0.5);
+            sleep(1000);
 
-			//move it into the building zone
-			front_left.setPower(-1); //front left drive backward
-			front_right.setPower(1); //front right drive forward
-			back_left.setPower(1); //back left drive forward
-			back_right.setPower(-1); //back right drive backward
-			sleep(1000);
+            //move it into the building zone
+            front_left.setPower(-1); //front left drive backward
+            front_right.setPower(1); //front right drive forward
+            back_left.setPower(1); //back left drive forward
+            back_right.setPower(-1); //back right drive backward
+            sleep(1000);
 
-			//let go
-			base_hand.setPosition(1);
+            //let go
+            basehand.setPosition(1);
 
-			//push forward
-			front_left.setPower(0.5);
-			front_right.setPower(0.5);
-			back_left.setPower(0.5);
-			back_right.setPower(0.5);
-			sleep(300);
+            //push forward
+            front_left.setPower(0.5);
+            front_right.setPower(0.5);
+            back_left.setPower(0.5);
+            back_right.setPower(0.5);
+            sleep(300);
 
-			//back up until parking on the line
-			while(sensor_color.blue()/100 - sensor_color.green()/100 < 3) {
-				front_left.setPower(-0.5);
-				front_right.setPower(-0.5);
-				back_left.setPower(-0.5);
-				back_right.setPower(-0.5);
-				if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3) { //move a little bit forward when the color sensor sees the line
-					front_left.setPower(0.5);
-					front_right.setPower(0.5);
-					back_left.setPower(0.5);
-					back_right.setPower(0.5);
-					sleep(200);
-				}
-			}
+            //back up until parking on the line
+            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3) {
+                front_left.setPower(-0.5);
+                front_right.setPower(-0.5);
+                back_left.setPower(-0.5);
+                back_right.setPower(-0.5);
+                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3) { //move a little bit forward when the color sensor sees the line
+                    front_left.setPower(0.5);
+                    front_right.setPower(0.5);
+                    back_left.setPower(0.5);
+                    back_right.setPower(0.5);
+                    sleep(200);
+                }
+            }
 
 
 				/* //motor directions from the remote drive
@@ -331,17 +335,17 @@ public class CadeRemoteDrive extends LinearOpMode {
 
 				if(gamepad1.dpad_right) {
 					while(gamepad1.dpad_right) {
-						turn_table.setPower(1);
+						turntable.setPower(1);
 					}
-					turn_table.setPower(0)
+					turntable.setPower(0)
 				}
 
 				if(gamepad1.dpad_left) {
 					while(gamepad1.dpad_left) {
-						turn_table.setPower(-1);
+						turntable.setPower(-1);
 					}
-					turn_table.setPower(0)
+					turntable.setPower(0)
 				}*/
-				}
-			}
-			}
+        }
+    }
+}
