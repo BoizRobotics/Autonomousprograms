@@ -71,20 +71,20 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
     private Servo claw;
     private Servo backclaw;
     private Servo basehand;
-    private DistanceSensor sensor2mDistance1;
-    ColorSensor sensor_color;
+    private DistanceSensor distance;
+    ColorSensor color;
     @Override
     public void runOpMode() {
         //initialize the hardware
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensor2mDistance1;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)distance;
         front_left = hardwareMap.get(DcMotor.class, "front_left");
         front_right = hardwareMap.get(DcMotor.class, "front_right");
         back_left = hardwareMap.get(DcMotor.class, "back_left");
         back_right = hardwareMap.get(DcMotor.class, "back_right");
         cow = hardwareMap.get(DcMotor.class, "cow");
         turntable = hardwareMap.get(DcMotor.class, "turntable");
-        sensor2mDistance1 = hardwareMap.get(DistanceSensor.class, "sensor_distance1");
-        sensor_color = hardwareMap.get(ColorSensor.class, "sensor_color");
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
+        color = hardwareMap.get(ColorSensor.class, "color");
         claw = hardwareMap.get(Servo.class, "claw");
         backclaw = hardwareMap.get(Servo.class, "backclaw");
         basehand = hardwareMap.get(Servo.class, "basehand");
@@ -106,7 +106,7 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
         waitForStart();
         while(opModeIsActive()) { //this program takes the inputs from both the color sensor and the 2m distance sensor to avoid obstacles and
             //add data to the ftc app
-            telemetry.addData("distance (in): ", sensor2mDistance1.getDistance(DistanceUnit.INCH));
+            telemetry.addData("distance (in): ", distance.getDistance(DistanceUnit.INCH));
             telemetry.update();
             if(opModeIsActive()) {
                 //turn table motor unfolded
@@ -151,12 +151,12 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 break;
             }
             //go left with the block (waiting until crossing the line)
-            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3 && opModeIsActive()) {
+            while(color.blue()/100 - color.green()/100 < 3 && opModeIsActive()) {
                 front_left.setPower(-0.5); //front left drive backward
                 front_right.setPower(0.5); //front right drive forward
                 back_left.setPower(0.5); //back left drive forward
                 back_right.setPower(-0.5); //back right drive backward
-                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3 && opModeIsActive()) {
+                if(color.blue()/100 - color.green()/100 >= 3 && opModeIsActive()) {
                     front_left.setPower(0);
                     front_right.setPower(0);
                     back_left.setPower(0);
@@ -186,12 +186,12 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
             }
 
 
-            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3 && opModeIsActive()) {
+            while(color.blue()/100 - color.green()/100 < 3 && opModeIsActive()) {
                 front_left.setPower(-0.5); //front left drive backward
                 front_right.setPower(0.5); //front right drive forward
                 back_left.setPower(0.5); //back left drive forward
                 back_right.setPower(-0.5); //back right drive backward
-                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3 && opModeIsActive()) { //move a little bit backward when the color sensor sees the line
+                if(color.blue()/100 - color.green()/100 >= 3 && opModeIsActive()) { //move a little bit backward when the color sensor sees the line
                     front_left.setPower(-0.5);
                     front_right.setPower(-0.5);
                     back_left.setPower(-0.5);
