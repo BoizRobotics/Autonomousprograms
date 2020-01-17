@@ -110,17 +110,17 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
             telemetry.update();
             if(opModeIsActive()) {
                 //turn table motor unfolded
-                turntable.setPower(0.4);
+                turntable.setPower(-0.4);
                 sleep(500);
                 turntable.setPower(0);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
             if(opModeIsActive()) {
                 //claw position set (open)
                 claw.setPosition(0.6);
                 backclaw.setPosition(0.3);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
             if(opModeIsActive()) {
@@ -130,14 +130,14 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 back_left.setPower(0.5);
                 back_right.setPower(0.5);
                 sleep(1000);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
             if(opModeIsActive()) {
                 //close the claw on the brick
                 claw.setPosition(0.15);
                 backclaw.setPosition(0.45);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
             if(opModeIsActive()) {
@@ -147,7 +147,7 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 back_left.setPower(-0.5);
                 back_right.setPower(-0.5);
                 sleep(500);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
             //go left with the block (waiting until crossing the line)
@@ -162,9 +162,9 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                     back_left.setPower(0);
                     back_right.setPower(0);
                     sleep(300); //wait a second when it sees the line
-                }else if(opModeIsActive() != true) {
-                break;
-            }
+                }else if(!opModeIsActive()) {
+                    break;
+                }
             }
             if(opModeIsActive()) {
                 //continue left for a second
@@ -173,7 +173,7 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 back_left.setPower(-0.5);
                 back_right.setPower(0.5);
                 sleep(1000);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
 
@@ -181,7 +181,7 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 //open the claw
                 claw.setPosition(0.6);
                 backclaw.setPosition(0.3);
-            }else if(opModeIsActive() != true) {
+            }else if(!opModeIsActive()) {
                 break;
             }
 
@@ -197,175 +197,10 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                     back_left.setPower(-0.5);
                     back_right.setPower(-0.5);
                     sleep(300);
-                }else if(opModeIsActive() != true) {
-                break;
+                }else if(!opModeIsActive()) {
+                    break;
+                }
             }
-            }
-
-
-				/* //motor directions from the remote drive
-			//add data to the ftc app
-			telemetry.addData("gamepad y = ", gamepad1.right_stick_y);
-			telemetry.addData("gamepad x = ",  gamepad1.right_stick_x);
-			telemetry.update();
-
-				if(gamepad1.right_stick_x > 0 && gamepad1.right_stick_y > -0.5 && gamepad1.right_stick_y < 0.5) { //go sideways (left) when the right stick is pushed left
-					while(gamepad1.right_stick_x > 0 && gamepad1.right_stick_y > -0.5 && gamepad1.right_stick_y < 0.5) {
-						front_left.setPower(gamepad1.right_stick_x); //front left drive forward
-						front_right.setPower(-gamepad1.right_stick_x); //front right drive backward
-						back_left.setPower(-gamepad1.right_stick_x); //back left drive backward
-						back_right.setPower(gamepad1.right_stick_x); //back right drive forward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				}
-
-				if(gamepad1.right_stick_x < 0 && gamepad1.right_stick_y < 0.5 && gamepad1.right_stick_y > -0.5) { //go sideways (right) when the right stick is pushed right
-					while(gamepad1.right_stick_x < 0 && gamepad1.right_stick_y < 0.5) {
-						front_left.setPower(gamepad1.right_stick_x); //front left drive backward
-						front_right.setPower(-gamepad1.right_stick_x); //front right drive forward
-						back_left.setPower(-gamepad1.right_stick_x); //back left drive forward
-						back_right.setPower(gamepad1.right_stick_x); //back right drive backward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				}
-
-				if(gamepad1.right_stick_x < -0.49 && gamepad1.right_stick_y < -0.49) { //go diagonal forward right when the joystick's x is more than half and the joystick's y is more than half
-					while(gamepad1.right_stick_x < -0.49 && gamepad1.right_stick_y < -0.49) {
-						front_left.setPower(0.3);
-						front_right.setPower(-gamepad1.right_stick_y); //forward
-						back_left.setPower(-gamepad1.right_stick_y); //forward
-						back_right.setPower(0.3);
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				} //completed
-
-				if(gamepad1.right_stick_x > 0.49 && gamepad1.right_stick_y < -0.49) { //go diagonal forward left when the joystick's x is less than half and the joystick's y is more than half
-					while(gamepad1.right_stick_x > 0.49 && gamepad1.right_stick_y < -0.49) {
-						front_left.setPower(-gamepad1.right_stick_y); //forward
-						front_right.setPower(0.3);
-						back_left.setPower(0.3);
-						back_right.setPower(-gamepad1.right_stick_y); //forward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				} //completed
-
-				if(gamepad1.right_stick_x < -0.49 && gamepad1.right_stick_y > 0.49) { //go diagonal backward right when the joystick's x is more than half and the joystick's y is less than half
-					while(gamepad1.right_stick_x < -0.49 && gamepad1.right_stick_y > 0.49) {
-						front_left.setPower(-gamepad1.right_stick_y); //backward
-						front_right.setPower(-0.3);
-						back_left.setPower(-0.3);
-						back_right.setPower(-gamepad1.right_stick_y); //backward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				} //completed
-
-				if(gamepad1.right_stick_x > 0.49 && gamepad1.right_stick_y > 0.49) { //go diagonal backward left when the joystick's x is less than half and the joystick's y is less than half
-					while(gamepad1.right_stick_x > 0.49 && gamepad1.right_stick_y > 0.49) {
-						front_left.setPower(-0.3);
-						front_right.setPower(-gamepad1.right_stick_y); //backward
-						back_left.setPower(-gamepad1.right_stick_y); //backward
-						back_right.setPower(-0.3);
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				} //completed
-
-				if(gamepad1.right_stick_y > 0 && gamepad1.right_stick_x > -0.5 && gamepad1.right_stick_x < 0.5) { //go backward when right stick is pushed down
-					 while(gamepad1.right_stick_y > 0 && gamepad1.right_stick_x > -0.5 && gamepad1.right_stick_x < 0.5) {
-						front_left.setPower(-gamepad1.right_stick_y); //front left drive backward
-						front_right.setPower(-gamepad1.right_stick_y); //front right drive backward
-						back_left.setPower(-gamepad1.right_stick_y); //back left drive backward
-						back_right.setPower(-gamepad1.right_stick_y); //back right drive backward
-					 }
-					 front_left.setPower(0);
-					 front_right.setPower(0);
-					 back_left.setPower(0);
-					 back_right.setPower(0);
-				}
-
-				if(gamepad1.right_stick_y < 0 && gamepad1.right_stick_x < 0.5 && gamepad1.right_stick_x > -0.5) { //go forward when right stick is pushed up
-					while(gamepad1.right_stick_y < 0 && gamepad1.right_stick_x < 0.5 && gamepad1.right_stick_x > -0.5) {
-						front_left.setPower(-gamepad1.right_stick_y); //front left drive forward
-						front_right.setPower(-gamepad1.right_stick_y); //front right drive forward
-						back_left.setPower(-gamepad1.right_stick_y); //back left drive forward
-						back_right.setPower(-gamepad1.right_stick_y); //back right drive forward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				}
-
-				if(gamepad1.left_stick_x > 0) { //spin left when left stick is pushed left
-					while(gamepad1.left_stick_x > 0) {
-						front_left.setPower(-gamepad1.left_stick_x); //front left drive backward
-						front_right.setPower(gamepad1.left_stick_x); //front right drive forward
-						back_left.setPower(-gamepad1.left_stick_x); //back left drive backward
-						back_right.setPower(gamepad1.left_stick_x); //back right drive forward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				}
-
-				if(gamepad1.left_stick_x < 0) { //spin right when left stick is pushed right
-					while(gamepad1.left_stick_x < 0) {
-						front_left.setPower(-gamepad1.left_stick_x); //front left drive forward
-						front_right.setPower(gamepad1.left_stick_x); //front right drive backward
-						back_left.setPower(-gamepad1.left_stick_x); //back left drive forward
-						back_right.setPower(gamepad1.left_stick_x); //back right drive backward
-					}
-					front_left.setPower(0);
-					front_right.setPower(0);
-					back_left.setPower(0);
-					back_right.setPower(0);
-				}
-
-				if(gamepad1.dpad_up) {
-					while(gamepad1.dpad_up) {
-						cow.setPower(1);
-					}
-					cow.setPower(0);
-				}
-
-				if(gamepad1.dpad_down) {
-					while(gamepad1.dpad_down) {
-						cow.setPower(-1);
-					}
-					cow.setPower(0);
-				}
-
-				if(gamepad1.dpad_right) {
-					while(gamepad1.dpad_right) {
-						turntable.setPower(1);
-					}
-					turntable.setPower(0)
-				}
-
-				if(gamepad1.dpad_left) {
-					while(gamepad1.dpad_left) {
-						turntable.setPower(-1);
-					}
-					turntable.setPower(0)
-				}*/
         }
     }
 }
