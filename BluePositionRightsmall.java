@@ -57,8 +57,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Autonomous(name="bluepositionrightsmall", group="Cade_sensor")
 //@Disabled
 public class BluePositionRightsmall extends LinearOpMode { /*This code makes the robot drive forward until a block is seen. It grabs it and brings it
-to the other side of the arena. It turns around and grabs the base, turning it and moving it into the building zone. Then the robot turns around
-and places a block on the base. Then the robot drives until it sees a blue line.*/
+to the other side of the arena. It drops it. Then the robot drives until it sees a blue line.*/
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -92,10 +91,10 @@ and places a block on the base. Then the robot drives until it sees a blue line.
         pull_down = hardwareMap.get(DcMotor.class, "pull_down");
 
         //set the direction of the motors
-        front_left.setDirection(DcMotor.Direction.FORWARD);
-        back_left.setDirection(DcMotor.Direction.FORWARD);
-        front_right.setDirection(DcMotor.Direction.REVERSE);
-        back_right.setDirection(DcMotor.Direction.REVERSE);
+        front_left.setDirection(DcMotor.Direction.REVERSE);
+        back_left.setDirection(DcMotor.Direction.REVERSE);
+        front_right.setDirection(DcMotor.Direction.FORWARD);
+        back_right.setDirection(DcMotor.Direction.FORWARD);
         cow.setDirection(DcMotor.Direction.FORWARD);
         turntable.setDirection(DcMotor.Direction.FORWARD);
         pull_down.setDirection(DcMotor.Direction.FORWARD);
@@ -108,171 +107,99 @@ and places a block on the base. Then the robot drives until it sees a blue line.
         while(opModeIsActive()) { //this program takes the inputs from both the color sensor and the 2m distance sensor to avoid obstacles and
             //add data to the ftc app
             telemetry.addData("distance (in): ", sensor2mDistance1.getDistance(DistanceUnit.INCH));
-            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-            telemetry.addData("gamepad y = ", gamepad1.right_stick_y);
-            telemetry.addData("gamepad x = ",  gamepad1.right_stick_x);
             telemetry.update();
-
-            //turn table motor unfolded
-            turntable.setPower(0.2);
-            sleep(300);
-            turntable.setPower(0);
-
-            //claw position set
-            claw.setPosition(0.5);
-            backclaw.setPosition(0);
-
-            // lift up a little
-            cow.setPower(0.3);
-            pull_down.setPower(0.3);
-            sleep(500);
-            pull_down.setPower(0);
-            cow.setPower(0);
-
-
-            //go left for half a second
-            front_left.setPower(0.5); //front left drive forward
-            front_right.setPower(-0.5); //front right drive backward
-            back_left.setPower(-0.5); //back left drive backward
-            back_right.setPower(0.5); //back right drive forward
-            sleep(500); //wait half a second
-
-            //go forward for 0.8 seconds
-            front_left.setPower(0.5);
-            front_right.setPower(0.5);
-            back_left.setPower(0.5);
-            back_right.setPower(0.5);
-            sleep(800);
-
-            //close the claw on brick if distance sensor says that the brick is close
-            if(sensor2mDistance1.getDistance(DistanceUnit.INCH) < 6) {
-                claw.setPosition(0);
-                backclaw.setPosition(0.2);
-            }else if(sensor2mDistance1.getDistance(DistanceUnit.INCH) > 5) {
-                while(sensor2mDistance1.getDistance(DistanceUnit.INCH) > 5) {
-                    front_left.setPower(0.5);
-                    front_right.setPower(0.5);
-                    back_left.setPower(0.5);
-                    back_right.setPower(0.5);
-                }
-                if(sensor2mDistance1.getDistance(DistanceUnit.INCH) < 6) {
-                    front_left.setPower(0);
-                    front_right.setPower(0);
-                    back_left.setPower(0);
-                    back_right.setPower(0);
-                    claw.setPosition(0);
-                    backclaw.setPosition(0.2);
-                }
+            if(opModeIsActive()) {
+                //turn table motor unfolded
+                turntable.setPower(0.4);
+                sleep(500);
+                turntable.setPower(0);
+            }else if(opModeIsActive() != true) {
+                break;
             }
-            //back up and let the lift down
-            cow.setPower(-0.3);
-            front_left.setPower(-0.5);
-            front_right.setPower(-0.5);
-            back_left.setPower(-0.5);
-            back_right.setPower(-0.5);
-            sleep(500);
-
-            //go right with the block (waiting until crossing the line)
-            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3) {
-                front_left.setPower(-0.5); //front left drive backward
-                front_right.setPower(0.5); //front right drive forward
-                back_left.setPower(0.5); //back left drive forward
-                back_right.setPower(-0.5); //back right drive backward
-                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3) {
-                    front_left.setPower(0);
-                    front_right.setPower(0);
-                    back_left.setPower(0);
-                    back_right.setPower(0);
-                    sleep(500);
-                }
+            if(opModeIsActive()) {
+                //claw position set (open)
+                claw.setPosition(0.6);
+                backclaw.setPosition(0.3);
+            }else if(opModeIsActive() != true) {
+                break;
             }
-
-            front_left.setPower(-0.5);
-            front_right.setPower(0.5);
-            back_left.setPower(0.5);
-            back_right.setPower(-0.5);
-            sleep(1500);
-
-            front_left.setPower(0.5);
-            front_right.setPower(-0.5);
-            back_left.setPower(0.5);
-            back_right.setPower(-0.5);
-            sleep(500);
-
-            front_left.setPower(-0.5);
-            front_right.setPower(-0.5);
-            back_left.setPower(-0.5);
-            back_right.setPower(-0.5);
-            sleep(500);
-
-            front_left.setPower(0);
-            front_right.setPower(0);
-            back_left.setPower(0);
-            back_right.setPower(0);
-
-            basehand.setPosition(0);
-            sleep(300);
-
-            //turn the base
-            front_left.setPower(-0.5);
-            front_right.setPower(0.5);
-            back_left.setPower(-0.5);
-            back_right.setPower(0.5);
-            sleep(1000);
-
-            //move it into the building zone
-            front_left.setPower(-1); //front left drive backward
-            front_right.setPower(1); //front right drive forward
-            back_left.setPower(1); //back left drive forward
-            back_right.setPower(-1); //back right drive backward
-            sleep(1000);
-
-            //let go
-            basehand.setPosition(1);
-
-            //back up
-            front_left.setPower(-0.5);
-            front_right.setPower(-0.5);
-            back_left.setPower(-0.5);
-            back_right.setPower(-0.5);
-            sleep(300);
-
-            //turn around
-            front_left.setPower(0.5);
-            front_right.setPower(-0.5);
-            back_left.setPower(0.5);
-            back_right.setPower(-0.5);
-            sleep(300);
-
-            //move forward
-            front_left.setPower(1);
-            front_right.setPower(1);
-            back_left.setPower(1);
-            back_right.setPower(1);
-            sleep(500);
-            front_left.setPower(0);
-            front_right.setPower(0);
-            back_left.setPower(0);
-            back_right.setPower(0);
-
-            //set the block on the base
-            claw.setPosition(1);
-            backclaw.setPosition(0);
-
-            //back up until parking on the line
-            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3) {
+            if(opModeIsActive()) {
+                //go forward for 0.8 seconds
+                front_left.setPower(0.5);
+                front_right.setPower(0.5);
+                back_left.setPower(0.5);
+                back_right.setPower(0.5);
+                sleep(1000);
+            }else if(opModeIsActive() != true) {
+                break;
+            }
+            if(opModeIsActive()) {
+                //close the claw on the brick
+                claw.setPosition(0.15);
+                backclaw.setPosition(0.45);
+            }else if(opModeIsActive() != true) {
+                break;
+            }
+            if(opModeIsActive()) {
+                //back up for half a second
                 front_left.setPower(-0.5);
                 front_right.setPower(-0.5);
                 back_left.setPower(-0.5);
                 back_right.setPower(-0.5);
-                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3) { //move a little bit forward when the color sensor sees the line
-                    front_left.setPower(0.5);
-                    front_right.setPower(0.5);
-                    back_left.setPower(0.5);
-                    back_right.setPower(0.5);
-                    sleep(200);
-                }
+                sleep(500);
+            }else if(opModeIsActive() != true) {
+                break;
+            }
+            //go left with the block (waiting until crossing the line)
+            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3 && opModeIsActive()) {
+                front_left.setPower(-0.5); //front left drive backward
+                front_right.setPower(0.5); //front right drive forward
+                back_left.setPower(0.5); //back left drive forward
+                back_right.setPower(-0.5); //back right drive backward
+                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3 && opModeIsActive()) {
+                    front_left.setPower(0);
+                    front_right.setPower(0);
+                    back_left.setPower(0);
+                    back_right.setPower(0);
+                    sleep(300); //wait a second when it sees the line
+                }else if(opModeIsActive() != true) {
+                break;
+            }
+            }
+            if(opModeIsActive()) {
+                //continue left for a second
+                front_left.setPower(0.5);
+                front_right.setPower(-0.5);
+                back_left.setPower(-0.5);
+                back_right.setPower(0.5);
+                sleep(1000);
+            }else if(opModeIsActive() != true) {
+                break;
+            }
+
+            if(opModeIsActive()) {
+                //open the claw
+                claw.setPosition(0.6);
+                backclaw.setPosition(0.3);
+            }else if(opModeIsActive() != true) {
+                break;
+            }
+
+
+            while(sensor_color.blue()/100 - sensor_color.green()/100 < 3 && opModeIsActive()) {
+                front_left.setPower(-0.5); //front left drive backward
+                front_right.setPower(0.5); //front right drive forward
+                back_left.setPower(0.5); //back left drive forward
+                back_right.setPower(-0.5); //back right drive backward
+                if(sensor_color.blue()/100 - sensor_color.green()/100 >= 3 && opModeIsActive()) { //move a little bit backward when the color sensor sees the line
+                    front_left.setPower(-0.5);
+                    front_right.setPower(-0.5);
+                    back_left.setPower(-0.5);
+                    back_right.setPower(-0.5);
+                    sleep(300);
+                }else if(opModeIsActive() != true) {
+                break;
+            }
             }
 
 
