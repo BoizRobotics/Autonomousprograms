@@ -54,7 +54,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="bluepositionrightsmall", group="Cade_sensor")
+@Autonomous(name="bluepositionrightsmall", group="Autonomous")
 //@Disabled
 public class BluePositionRightsmall extends LinearOpMode { /*This code makes the robot drive forward until a block is seen. It grabs it and brings it
 to the other side of the arena. It drops it. Then the robot drives until it sees a blue line.*/
@@ -76,7 +76,6 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
     @Override
     public void runOpMode() {
         //initialize the hardware
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)distance;
         front_left = hardwareMap.get(DcMotor.class, "front_left");
         front_right = hardwareMap.get(DcMotor.class, "front_right");
         back_left = hardwareMap.get(DcMotor.class, "back_left");
@@ -104,103 +103,48 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
         telemetry.update();
 
         waitForStart();
-        while(opModeIsActive()) { //this program takes the inputs from both the color sensor and the 2m distance sensor to avoid obstacles and
-            //add data to the ftc app
-            telemetry.addData("distance (in): ", distance.getDistance(DistanceUnit.INCH));
-            telemetry.update();
-            if(opModeIsActive()) {
-                //turn table motor unfolded
-                turntable.setPower(-0.4);
-                sleep(500);
-                turntable.setPower(0);
-            }else if(!opModeIsActive()) {
-                break;
-            }
-            if(opModeIsActive()) {
-                //claw position set (open)
-                claw.setPosition(0.6);
-                backclaw.setPosition(0.3);
-            }else if(!opModeIsActive()) {
-                break;
-            }
+        while(opModeIsActive()) {
+
             if(opModeIsActive()) {
                 //go forward for 0.8 seconds
                 front_left.setPower(0.5);
                 front_right.setPower(0.5);
                 back_left.setPower(0.5);
                 back_right.setPower(0.5);
-                sleep(1000);
-            }else if(!opModeIsActive()) {
-                break;
-            }
-            if(opModeIsActive()) {
-                //close the claw on the brick
-                claw.setPosition(0.15);
-                backclaw.setPosition(0.45);
-            }else if(!opModeIsActive()) {
-                break;
-            }
-            if(opModeIsActive()) {
-                //back up for half a second
-                front_left.setPower(-0.5);
-                front_right.setPower(-0.5);
-                back_left.setPower(-0.5);
-                back_right.setPower(-0.5);
                 sleep(500);
+                front_left.setPower(0);
+                front_right.setPower(0);
+                back_left.setPower(0);
+                back_right.setPower(0);
+                sleep(200);
             }else if(!opModeIsActive()) {
                 break;
             }
-            //go left with the block (waiting until crossing the line)
-            while(color.blue()/100 - color.green()/100 < 3 && opModeIsActive()) {
-                front_left.setPower(-0.5); //front left drive backward
-                front_right.setPower(0.5); //front right drive forward
-                back_left.setPower(0.5); //back left drive forward
-                back_right.setPower(-0.5); //back right drive backward
-                if(color.blue()/100 - color.green()/100 >= 3 && opModeIsActive()) {
+            //go left with the block
+            if(opModeIsActive()) {
+                //continue left for a second
+                front_left.setPower(-0.5);
+                front_right.setPower(0.5);
+                back_left.setPower(0.5);
+                back_right.setPower(-0.5);
+                sleep(3000);
+            }else if(!opModeIsActive()) {
+                break;
+            }
+                if(opModeIsActive()) {
+                    front_left.setPower(0.5);
+                    front_right.setPower(0.5);
+                    back_left.setPower(0.5);
+                    back_right.setPower(0.5);
+                    sleep(300);
                     front_left.setPower(0);
                     front_right.setPower(0);
                     back_left.setPower(0);
                     back_right.setPower(0);
-                    sleep(300); //wait a second when it sees the line
                 }else if(!opModeIsActive()) {
-                    break;
-                }
-            }
-            if(opModeIsActive()) {
-                //continue left for a second
-                front_left.setPower(0.5);
-                front_right.setPower(-0.5);
-                back_left.setPower(-0.5);
-                back_right.setPower(0.5);
-                sleep(1000);
-            }else if(!opModeIsActive()) {
                 break;
             }
-
-            if(opModeIsActive()) {
-                //open the claw
-                claw.setPosition(0.6);
-                backclaw.setPosition(0.3);
-            }else if(!opModeIsActive()) {
                 break;
-            }
-
-
-            while(color.blue()/100 - color.green()/100 < 3 && opModeIsActive()) {
-                front_left.setPower(-0.5); //front left drive backward
-                front_right.setPower(0.5); //front right drive forward
-                back_left.setPower(0.5); //back left drive forward
-                back_right.setPower(-0.5); //back right drive backward
-                if(color.blue()/100 - color.green()/100 >= 3 && opModeIsActive()) { //move a little bit backward when the color sensor sees the line
-                    front_left.setPower(-0.5);
-                    front_right.setPower(-0.5);
-                    back_left.setPower(-0.5);
-                    back_right.setPower(-0.5);
-                    sleep(300);
-                }else if(!opModeIsActive()) {
-                    break;
-                }
-            }
         }
     }
 }

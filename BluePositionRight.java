@@ -54,9 +54,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RedPositionLeftsmall", group="Autonomous")
+@Autonomous(name="BluePositionRight", group="Autonomous")
 //@Disabled
-public class RedPositionLeftsmall extends LinearOpMode { /*This code makes the robot drive forward until a block is seen. It grabs it and brings it
+public class BluePositionRight extends LinearOpMode { /*This code makes the robot drive forward until a block is seen. It grabs it and brings it
 to the other side of the arena. It drops it. Then the robot drives until it sees a blue line.*/
 
     // Declare OpMode members.
@@ -105,12 +105,28 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
         waitForStart();
         while(opModeIsActive()) {
             if(opModeIsActive()) {
+                //turn table motor unfolded
+                turntable.setPower(-0.4);
+                sleep(350);
+                turntable.setPower(0);
+            }else if(!opModeIsActive()) {
+                break;
+            }
+            if(opModeIsActive()) {
+                //claw position set (open)
+                claw.setPosition(0.6);
+                backclaw.setPosition(0.3);
+                sleep(300);
+            }else if(!opModeIsActive()) {
+                break;
+            }
+            if(opModeIsActive()) {
                 //go forward for 0.8 seconds
                 front_left.setPower(0.5);
                 front_right.setPower(0.5);
                 back_left.setPower(0.5);
                 back_right.setPower(0.5);
-                sleep(500);
+                sleep(1050);
                 front_left.setPower(0);
                 front_right.setPower(0);
                 back_left.setPower(0);
@@ -119,31 +135,68 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
             }else if(!opModeIsActive()) {
                 break;
             }
-            //go left with the block
             if(opModeIsActive()) {
-                //continue left for a second
-                front_left.setPower(0.5);
-                front_right.setPower(-0.5);
-                back_left.setPower(-0.5);
-                back_right.setPower(0.5);
-                sleep(3000);
+                //close the claw on the brick
+                claw.setPosition(0.15);
+                backclaw.setPosition(0.45);
+                sleep(400);
             }else if(!opModeIsActive()) {
                 break;
             }
             if(opModeIsActive()) {
+                //back up for half a second
                 front_left.setPower(-0.5);
                 front_right.setPower(-0.5);
                 back_left.setPower(-0.5);
                 back_right.setPower(-0.5);
-                sleep(300);
-                front_left.setPower(0);
-                front_right.setPower(0);
-                back_left.setPower(0);
-                back_right.setPower(0);
+                sleep(500);
             }else if(!opModeIsActive()) {
                 break;
             }
-            break;
+            //go left with the block
+            if(opModeIsActive()) {
+                //continue left for a second
+                front_left.setPower(-0.5);
+                front_right.setPower(0.5);
+                back_left.setPower(0.5);
+                back_right.setPower(-0.5);
+                sleep(4000);
+            }else if(!opModeIsActive()) {
+                break;
+            }
+
+            if(opModeIsActive()) {
+                //open the claw
+                claw.setPosition(0.6);
+                backclaw.setPosition(0.3);
+                telemetry.addData("Claw is open: ", "true");
+                telemetry.update();
+            }else if(!opModeIsActive()){
+                break;
+            }
+            if(opModeIsActive()) {
+                front_left.setPower(0.5); //front left drive backward
+                front_right.setPower(-0.5); //front right drive forward
+                back_left.setPower(-0.5); //back left drive forward
+                back_right.setPower(0.5); //back right drive backward
+                sleep(1300);
+            }else if(!opModeIsActive()) {
+                break;
+            }
+                if(opModeIsActive()) {
+                    front_left.setPower(0.5);
+                    front_right.setPower(0.5);
+                    back_left.setPower(0.5);
+                    back_right.setPower(0.5);
+                    sleep(300);
+                    front_left.setPower(0);
+                    front_right.setPower(0);
+                    back_left.setPower(0);
+                    back_right.setPower(0);
+                }else if(!opModeIsActive()) {
+                break;
+            }
+                break;
         }
     }
 }
