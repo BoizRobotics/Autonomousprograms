@@ -160,7 +160,7 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 front_right.setPower(0.5);
                 back_left.setPower(0.5);
                 back_right.setPower(-0.5);
-                sleep(4000);
+                sleep(4500);
             }else if(!opModeIsActive()) {
                 break;
             }
@@ -179,16 +179,16 @@ to the other side of the arena. It drops it. Then the robot drives until it sees
                 front_right.setPower(-0.5); //front right drive forward
                 back_left.setPower(-0.5); //back left drive forward
                 back_right.setPower(0.5); //back right drive backward
-                sleep(1300);
+                sleep(1900);
             }else if(!opModeIsActive()) {
                 break;
             }
                 if(opModeIsActive()) {
-                    front_left.setPower(0.5);
-                    front_right.setPower(0.5);
-                    back_left.setPower(0.5);
-                    back_right.setPower(0.5);
-                    sleep(300);
+                    front_left.setPower(-0.5);
+                    front_right.setPower(-0.5);
+                    back_left.setPower(-0.5);
+                    back_right.setPower(-0.5);
+                    sleep(500);
                     front_left.setPower(0);
                     front_right.setPower(0);
                     back_left.setPower(0);
